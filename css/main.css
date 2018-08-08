@@ -4,21 +4,15 @@ html, body, .main-container {
 
 .header {
 	height: 10%;
-}
-
-.header h1 {
-	margin: 0 auto;
-	line-height: 50px;
-}
-
-.header h1 span {
-	display: inline-block;
-	vertical-align: middle;
-	line-height: normal;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .main {
 	height: 80%;
+	display: flex;
+	justify-content: center;
 }
 
 .left-aside>div, .center>div, .right-aside>div {
@@ -28,13 +22,15 @@ html, body, .main-container {
 	border-radius: 10px;
 }
 
-#control {
-	text-align: center;
-}
-
 #tempo {
 	width: 100px;
 	margin: 0 auto;
+	display: inline-block;
+}
+
+#start {
+	margin: 20px auto;
+	display: block;
 }
 
 #metroblock-container {
@@ -64,17 +60,9 @@ html, body, .main-container {
 
 .footer {
 	height: 10%;
-}
-
-.copyright {
-	text-align: center;
-	line-height: 50px;
-}
-
-.copyright span {
-	display: inline-block;
-	vertical-align: middle;
-	line-height: 32px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .z-index-1 {

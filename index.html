@@ -30,17 +30,13 @@
 						How to:
 					</h2>
 					<p>
-						Type BPM value into the box and click on the "Start button". Then you can just listen metronome clicks for excercising or check your accuracy by hitting any key trying to catch the beat. With each hit you will see your mark (from "Fail" to "Excellent"). Green text color means that you've done it much accurately. Red means that you've been too late and blue means "too early". Enjoy!
+						Type BPM value between 30 and 300 into the box and click on the "Start button". Then you can just listen metronome clicks for excercising or check your accuracy by hitting any key trying to catch the beat. With each hit you will see your mark (from "Fail" to "Excellent"). Green text color means that you've done it much accurately. Red means that you've been too late and blue means "too early". Enjoy!
 					</p>
 				</div>
 			</div>
 			<div class="center col-4">
 				<div class="bg-light z-index-1">
-					<div id="control">
-						<input type="text" id="tempo" class="form-control">
-						<br>
-						<button id="start" class="btn btn-dark">Start</button>
-					</div>
+					<button id="start" class="btn btn-dark" disabled>Start</button>
 					<div id="metroblock-container">
 						<div id="metroblock" class="bg-warning z-index-1">		
 							<span id="stats"></span>
@@ -50,11 +46,17 @@
 			</div>
 			<div class="right-aside col-4">
 				<div class="bg-light z-index-1">
+					<h2>Controls:</h2>
+					<div id="control">
+						<label for="tempo">BPM:</label>
+						<input type="text" id="tempo" class="form-control">
+					</div>
+					
 				</div>
 			</div>
 		</div>
 		<div class="footer row bg-dark text-light z-index-1">
-			<div class="copyright col">
+			<div class="copyright">
 				<span>Dmitri Yudovich&copy; 2018</span>
 			</div>
 		</div>

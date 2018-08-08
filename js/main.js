@@ -1,5 +1,5 @@
 //delay measured in seconds
-const magicalDelay = 74; //delay between actual tick time and sound/animation
+const magicalDelay = 60; //delay between actual tick time and sound/animation
 
 
 function tap(delay, startTime) {
@@ -31,7 +31,7 @@ function tap(delay, startTime) {
 function tick(sound, delay) {
 	sound.play();
 	$("#metroblock").css({
-		"animation-duration" : "" + (delay - 0.05)  + "s"
+		"animation-duration" : "" + Math.min(0.95, (delay - 0.05))  + "s"
 	});
 	$("#metroblock").toggleClass("metroblock-animated");
 	setTimeout(function() {
@@ -44,7 +44,7 @@ function metronomeOnOff() {
 	$("#start").html("Stop");
 	$("#stats").html("");
 	let clickSound = new Audio("resources/click.wav");
-	let delay = 60 / (parseInt($("#tempo").val()));
+	let delay = 60 / (parseInt($("#tempo").val(), 10));
 	
 	tick(clickSound, delay);
 	let metrotimer = setInterval(function() {
@@ -66,7 +66,17 @@ function metronomeOnOff() {
 }
 
 $(document).ready(function() {
-	let started = false;
-	let firstTapDone = false;
 	$("#start").click(metronomeOnOff);
+	$("#tempo").keypress(function(e) {
+		if (e.which && isNaN(parseInt(String.fromCharCode(e.which), 10))) {
+			return false;
+		}
+	});
+	$("#tempo").keyup(function(e) {
+		if (parseInt(this.value, 10) >= 30 && parseInt(this.value, 10) <= 300) {
+			start.disabled = false;
+		} else {
+			start.disabled = true;
+		}
+	})
 });	
