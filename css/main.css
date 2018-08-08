@@ -1,23 +1,106 @@
-#metroblock {
+html, body, .main-container {
+	height: 100%;
+}
+
+.header {
+	height: 10%;
+}
+
+.header h1 {
+	margin: 0 auto;
+	line-height: 50px;
+}
+
+.header h1 span {
+	display: inline-block;
+	vertical-align: middle;
+	line-height: normal;
+}
+
+.main {
+	height: 80%;
+}
+
+.left-aside>div, .center>div, .right-aside>div {
+	padding: 20px;
+	margin: 20px;
+	height: calc(100% - 40px);
+	border-radius: 10px;
+}
+
+#control {
+	text-align: center;
+}
+
+#tempo {
+	width: 100px;
+	margin: 0 auto;
+}
+
+#metroblock-container {
 	height: 200px;
 	width: 200px;
+	margin: 50px auto;
+}
+
+#metroblock {
+	position: relative;
+	border-radius: 20px;
+	top: 25px;
+	left: 25px;
+	height: 150px;
+	width: 150px;
 	background-color: green;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+	font-size: 20px;
+	font-weight: 800;
 }
 
 .metroblock-animated {
 	animation-name: metronome-animation; 
 }
 
+.footer {
+	height: 10%;
+}
+
+.copyright {
+	text-align: center;
+	line-height: 50px;
+}
+
+.copyright span {
+	display: inline-block;
+	vertical-align: middle;
+	line-height: 32px;
+}
+
+.z-index-1 {
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+
 @keyframes metronome-animation {
 	from {
 		background-color: "red";
-		height: 250px;
-		width: 250px;
+		top: 0;
+		left: 0;
+		height: 200px;
+		width: 200px;
+		font-size: 25px;
+		box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 	}
 	to {
 		background-color: "red";
-		height: 200px;
-		width: 200px;
+		top: 25px;
+		left: 25px;
+		height: 150px;
+		width: 150px;
+		font-size: 20px;
+
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 	}
 }
 

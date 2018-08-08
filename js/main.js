@@ -7,6 +7,7 @@ function tap(delay, startTime) {
 		let deviation = (((new Date().getTime() - startTime - magicalDelay) % (delay * 1000)) / 1000).toPrecision(3);
 		deviation = Math.round(((delay / 2 - deviation > 1e-4)  ? 
 			deviation : (deviation - delay).toPrecision(3)) / delay * 200).toPrecision(2);
+		
 		if (Math.abs(deviation) > 60) {
 			$("#stats").html("Fail");
 		} else if (Math.abs(deviation) > 25) {
@@ -16,6 +17,7 @@ function tap(delay, startTime) {
 		} else {
 			$("#stats").html("Excellent");
 		}
+
 		if (deviation > 10) {
 			$("#stats").css("color", "red");
 		} else if (deviation < -10) {
