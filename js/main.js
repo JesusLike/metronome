@@ -40,6 +40,9 @@ function tick(sound, delay) {
 }
 
 function metronomeOnOff() {
+	if ($("#start").hasClass("disabled")) {
+		return;
+	}
 	$("#start").off("click");
 	$("#start").html("Stop");
 	$("#stats").html("");
@@ -74,9 +77,9 @@ $(document).ready(function() {
 	});
 	$("#tempo").keyup(function(e) {
 		if (parseInt(this.value, 10) >= 30 && parseInt(this.value, 10) <= 300) {
-			start.disabled = false;
+			$("#start").removeClass("disabled");
 		} else {
-			start.disabled = true;
+			$("#start").addClass("disabled");
 		}
 	})
 });	

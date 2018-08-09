@@ -29,8 +29,14 @@ html, body, .main-container {
 }
 
 #start {
+	width: 60px;
+	height: 40px;
 	margin: 20px auto;
 	display: block;
+}
+
+.disabled, .disabled:hover, .disabled:focus {
+	background-color: #343a40;
 }
 
 #metroblock-container {
