@@ -53,13 +53,16 @@ function metronomeOnOff() {
 	let metrotimer = setInterval(function() {
 		tick(clickSound, delay);
 	}, delay * 1000);
-	let startTime = new Date().getTime();
-	$(document).keydown(tap(delay, startTime));
+	let tapListener = tap(delay, new Date().getTime()); 
+	$(document).keydown(tapListener);
+	document.addEventListener("touchstart", tapListener);
 
 
 	$("#start").click(function() {
 		$("#start").off("click");
 		$(document).off("keydown");
+		document.removeEventListener("touchstart", tapListener);
+		
 		$("#start").html("Start");
 		$("#stats").html("");
 		clearInterval(metrotimer);
