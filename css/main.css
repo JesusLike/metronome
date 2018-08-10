@@ -40,23 +40,30 @@ html, body, .main-container {
 }
 
 #metroblock-container {
-	height: 200px;
-	width: 200px;
+	width: 62.5%;
 	margin: 50px auto;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#metroblock-container:before {
+	content: "";
+	display: block;
+	padding-top: 100%;
+	position: relative;
 }
 
 #metroblock {
-	position: relative;
 	border-radius: 20px;
-	top: 25px;
-	left: 25px;
-	height: 150px;
-	width: 150px;
-	background-color: green;
+	position: absolute;
+	height: 75%;
+	width: 75%;
 	text-align: center;
 	display: table-cell;
 	vertical-align: middle;
-	font-size: 20px;
+	font-size: 10%;
 	font-weight: 800;
 }
 
@@ -75,24 +82,19 @@ html, body, .main-container {
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-
 @keyframes metronome-animation {
 	from {
 		background-color: "red";
-		top: 0;
-		left: 0;
-		height: 200px;
-		width: 200px;
-		font-size: 25px;
+		height: 100%;
+		width: 100%;
+		font-size: 10%;
 		box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 	}
 	to {
 		background-color: "red";
-		top: 25px;
-		left: 25px;
-		height: 150px;
-		width: 150px;
-		font-size: 20px;
+		height: 75%;
+		width: 75%;
+		font-size: 10%;
 
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 	}
