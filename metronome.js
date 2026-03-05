@@ -17,10 +17,10 @@ function clamp(val, min, max) {
   return Math.max(min, Math.min(max, val));
 }
 
-function setTempo(val) {
+function setTempo(val, { updateSlider = true } = {}) {
   tempo = clamp(Math.round(val), MIN_BPM, MAX_BPM);
   tempoInput.value = tempo;
-  tempoSlider.value = tempo;
+  if (updateSlider) tempoSlider.value = tempo;
 }
 
 tempoInput.addEventListener('input', () => {
@@ -33,7 +33,7 @@ tempoInput.addEventListener('blur', () => {
 });
 
 tempoSlider.addEventListener('input', () => {
-  setTempo(parseInt(tempoSlider.value, 10));
+  setTempo(parseInt(tempoSlider.value, 10), { updateSlider: false });
 });
 
 function scheduleClick(time) {
