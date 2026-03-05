@@ -1,5 +1,5 @@
-const MIN_BPM = 20;
-const MAX_BPM = 300;
+const MIN_BPM = 1;
+const MAX_BPM = 999;
 const LOOKAHEAD_MS = 25;
 const SCHEDULE_AHEAD_S = 0.1;
 
@@ -12,6 +12,13 @@ let tempo = 120;
 const tempoInput = document.getElementById('tempo-input');
 const tempoSlider = document.getElementById('tempo-slider');
 const toggleBtn = document.getElementById('toggle-btn');
+
+tempoInput.min = MIN_BPM;
+tempoInput.max = MAX_BPM;
+tempoInput.value = tempo;
+tempoSlider.min = MIN_BPM;
+tempoSlider.max = MAX_BPM;
+tempoSlider.value = tempo;
 
 function clamp(val, min, max) {
   return Math.max(min, Math.min(max, val));
