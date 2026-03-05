@@ -23,13 +23,9 @@ function setTempo(val, { updateSlider = true } = {}) {
   if (updateSlider) tempoSlider.value = tempo;
 }
 
-tempoInput.addEventListener('input', () => {
+tempoInput.addEventListener('change', () => {
   const val = parseInt(tempoInput.value, 10);
-  if (!isNaN(val)) setTempo(val);
-});
-
-tempoInput.addEventListener('blur', () => {
-  setTempo(parseInt(tempoInput.value, 10) || tempo);
+  setTempo(isNaN(val) ? tempo : val);
 });
 
 tempoSlider.addEventListener('input', () => {
