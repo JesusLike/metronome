@@ -28,6 +28,7 @@ function setTempo(val, { updateSlider = true } = {}) {
   tempo = clamp(Math.round(val), MIN_BPM, MAX_BPM);
   tempoInput.value = tempo;
   if (updateSlider) tempoSlider.value = tempo;
+  if (running) nextNoteTime = audioCtx.currentTime + 0.05;
 }
 
 tempoInput.addEventListener('change', () => {
@@ -35,7 +36,7 @@ tempoInput.addEventListener('change', () => {
   setTempo(isNaN(val) ? tempo : val);
 });
 
-tempoSlider.addEventListener('input', () => {
+tempoSlider.addEventListener('change', () => {
   setTempo(parseInt(tempoSlider.value, 10), { updateSlider: false });
 });
 
