@@ -5,45 +5,47 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #111;
-  color: #f0f0f0;
+  background: #f5f5f5;
+  color: rgba(0, 0, 0, 0.87);
   font-family: system-ui, sans-serif;
+  padding: 16px;
 }
 
 .card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
-  padding: 48px 56px;
-  background: #1e1e1e;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  min-width: 320px;
+  gap: 24px;
+  padding: 32px 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 360px;
 }
 
 h1 {
-  font-size: 1.1rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #888;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .tempo-display {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: 8px;
 }
 
 #tempo-input {
   width: 100px;
   font-size: 4rem;
-  font-weight: 700;
+  font-weight: 300;
   text-align: center;
   background: transparent;
   border: none;
-  color: #f0f0f0;
+  color: rgba(0, 0, 0, 0.87);
   outline: none;
   -moz-appearance: textfield;
 }
@@ -51,15 +53,10 @@ h1 {
 #tempo-input::-webkit-inner-spin-button,
 #tempo-input::-webkit-outer-spin-button { -webkit-appearance: none; }
 
-#tempo-input:focus {
-  color: #fff;
-  text-shadow: 0 0 20px rgba(255,255,255,0.3);
-}
-
 .bpm-label {
-  font-size: 1rem;
-  color: #666;
+  font-size: 0.875rem;
   font-weight: 500;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 #tempo-slider {
@@ -68,7 +65,7 @@ h1 {
   appearance: none;
   height: 4px;
   border-radius: 2px;
-  background: #333;
+  background: rgba(0, 0, 0, 0.12);
   outline: none;
   cursor: pointer;
 }
@@ -79,44 +76,35 @@ h1 {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #fff;
+  background: #1976d2;
   cursor: pointer;
-  transition: transform 0.1s;
 }
-
-#tempo-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
 #tempo-slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #fff;
+  background: #1976d2;
   cursor: pointer;
   border: none;
 }
 
 #toggle-btn {
   width: 100%;
-  padding: 16px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 14px;
+  font-size: 0.875rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   border: none;
-  border-radius: 12px;
+  border-radius: 4px;
   cursor: pointer;
-  background: #fff;
-  color: #111;
-  transition: background 0.15s, color 0.15s, transform 0.1s;
-}
-
-#toggle-btn:hover { background: #e0e0e0; }
-#toggle-btn:active { transform: scale(0.97); }
-
-#toggle-btn.running {
-  background: #333;
+  background: #1976d2;
   color: #fff;
-  border: 1px solid #444;
+  transition: background 0.2s;
 }
 
-#toggle-btn.running:hover { background: #444; }
+#toggle-btn:hover { background: #1565c0; }
+
+#toggle-btn.running { background: #e53935; }
+#toggle-btn.running:hover { background: #c62828; }

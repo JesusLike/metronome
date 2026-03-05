@@ -29,3 +29,10 @@ HTML structure is in `index.html`.
 **Tempo controls:** Slider and number input are kept in sync via a shared `setTempo()` function that clamps to `[20, 300]` BPM.
 
 **State:** `running` (bool), `tempo` (number), `audioCtx` (created lazily on first Start to comply with browser autoplay policy), `nextNoteTime` (tracks when the next click should fire).
+
+## Design
+
+- **Material Design** — follow Material Design principles for components, spacing, elevation, and interaction patterns.
+- **Light theme** — use a light color palette as the default and only theme.
+- **Minimal visual effects** — avoid heavy animations, gradients, shadows, or decorative flourishes; keep the UI clean and functional.
+- **Mobile-first layout** — design for small screens first, then scale up for larger viewports.
