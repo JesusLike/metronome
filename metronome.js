@@ -2,6 +2,8 @@ const MIN_BPM = 1;
 const MAX_BPM = 999;
 const LOOKAHEAD_MS = 25;
 const SCHEDULE_AHEAD_S = 0.1;
+const FREQ_ACCENTED = 1320;
+const FREQ_NORMAL = 880;
 
 let audioCtx = null;
 let running = false;
@@ -55,7 +57,7 @@ function scheduleClick(time, isAccented) {
   osc.connect(gain);
   gain.connect(audioCtx.destination);
 
-  osc.frequency.value = isAccented ? 1200 : 800;
+  osc.frequency.value = isAccented ? FREQ_ACCENTED : FREQ_NORMAL;
   osc.type = 'sine';
 
   gain.gain.setValueAtTime(0, time);
