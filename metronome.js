@@ -50,6 +50,22 @@ tempoSlider.addEventListener('change', () => {
   setTempo(parseInt(tempoSlider.value, 10), { updateSlider: false });
 });
 
+let wheelTimer = null;
+
+function onTempoWheel(e) {
+  e.preventDefault();
+  const current = parseInt(tempoInput.value, 10);
+  const delta = e.deltaY < 0 ? 1 : -1;
+  const newVal = clamp((isNaN(current) ? tempo : current) + delta, MIN_BPM, MAX_BPM);
+  tempoInput.value = newVal;
+  tempoSlider.value = newVal;
+  clearTimeout(wheelTimer);
+  wheelTimer = setTimeout(() => setTempo(newVal), 300);
+}
+
+tempoInput.addEventListener('wheel', onTempoWheel, { passive: false });
+tempoSlider.addEventListener('wheel', onTempoWheel, { passive: false });
+
 function scheduleClick(time, isAccented) {
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
