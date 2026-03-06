@@ -8,6 +8,7 @@ let running = false;
 let nextNoteTime = 0;
 let timerId = null;
 let tempo = 120;
+let currentBeat = 0;
 
 const tempoInput = document.getElementById('tempo-input');
 const tempoSlider = document.getElementById('tempo-slider');
@@ -28,7 +29,10 @@ function setTempo(val, { updateSlider = true } = {}) {
   tempo = clamp(Math.round(val), MIN_BPM, MAX_BPM);
   tempoInput.value = tempo;
   if (updateSlider) tempoSlider.value = tempo;
-  if (running) nextNoteTime = audioCtx.currentTime + 0.05;
+  if (running) {
+    nextNoteTime = audioCtx.currentTime + 0.05;
+    currentBeat = 0;
+  }
 }
 
 tempoInput.addEventListener('change', () => {
@@ -44,14 +48,14 @@ tempoSlider.addEventListener('change', () => {
   setTempo(parseInt(tempoSlider.value, 10), { updateSlider: false });
 });
 
-function scheduleClick(time) {
+function scheduleClick(time, isAccented) {
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
 
   osc.connect(gain);
   gain.connect(audioCtx.destination);
 
-  osc.frequency.value = 1000;
+  osc.frequency.value = isAccented ? 1200 : 800;
   osc.type = 'sine';
 
   gain.gain.setValueAtTime(0, time);
@@ -64,8 +68,9 @@ function scheduleClick(time) {
 
 function scheduler() {
   while (nextNoteTime < audioCtx.currentTime + SCHEDULE_AHEAD_S) {
-    scheduleClick(nextNoteTime);
+    scheduleClick(nextNoteTime, currentBeat === 0);
     nextNoteTime += 60.0 / tempo;
+    currentBeat = (currentBeat + 1) % 4;
   }
   timerId = setTimeout(scheduler, LOOKAHEAD_MS);
 }
@@ -74,6 +79,7 @@ function start() {
   if (!audioCtx) audioCtx = new AudioContext();
   if (audioCtx.state === 'suspended') audioCtx.resume();
   nextNoteTime = audioCtx.currentTime + 0.05;
+  currentBeat = 0;
   running = true;
   scheduler();
   toggleBtn.textContent = 'Stop';
