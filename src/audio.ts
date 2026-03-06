@@ -45,6 +45,7 @@ function scheduler(): void {
 }
 
 export function start(tempo: number): void {
+  stop(); // clear any existing scheduler before starting a new one
   if (!audioCtx) audioCtx = new AudioContext();
   if (audioCtx.state === 'suspended') audioCtx.resume();
   currentTempo = tempo;

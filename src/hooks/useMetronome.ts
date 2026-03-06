@@ -6,6 +6,7 @@ export function useMetronome() {
   const [tempo, setTempoState] = useState(120);
   const [running, setRunning] = useState(false);
   const tempoRef = useRef(120);
+  const runningRef = useRef(false);
 
   const setTempo = useCallback((val: number) => {
     const clamped = clamp(Math.round(val), MIN_BPM, MAX_BPM);
@@ -15,15 +16,15 @@ export function useMetronome() {
   }, []);
 
   const toggle = useCallback(() => {
-    setRunning((prev) => {
-      if (prev) {
-        stop();
-        return false;
-      } else {
-        start(tempoRef.current);
-        return true;
-      }
-    });
+    if (runningRef.current) {
+      stop();
+      runningRef.current = false;
+      setRunning(false);
+    } else {
+      start(tempoRef.current);
+      runningRef.current = true;
+      setRunning(true);
+    }
   }, []);
 
   return { tempo, running, setTempo, toggle };
