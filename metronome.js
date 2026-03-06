@@ -36,6 +36,10 @@ tempoInput.addEventListener('change', () => {
   setTempo(isNaN(val) ? tempo : val);
 });
 
+tempoSlider.addEventListener('input', () => {
+  tempoInput.value = tempoSlider.value;
+});
+
 tempoSlider.addEventListener('change', () => {
   setTempo(parseInt(tempoSlider.value, 10), { updateSlider: false });
 });
