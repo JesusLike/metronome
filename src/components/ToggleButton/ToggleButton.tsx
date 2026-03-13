@@ -5,13 +5,13 @@ interface Props {
   onToggle: () => void;
 }
 
-export function ToggleButton({ isRunning: running, onToggle }: Props) {
+export function ToggleButton({ isRunning: isRunning, onToggle }: Props) {
   return (
     <button
-      className={`${styles.toggleBtn} ${running ? styles.running : ''}`}
+      className={`${styles.toggleBtn} ${isRunning ? styles.running : ''}`}
       onClick={onToggle}
     >
-      {running ? 'Stop' : 'Start'}
+      {isRunning ? 'Stop' : 'Start'}
     </button>
   );
 }
