@@ -1,11 +1,11 @@
 import styles from './ToggleButton.module.css';
 
 interface Props {
-  running: boolean;
+  isRunning: boolean;
   onToggle: () => void;
 }
 
-export function ToggleButton({ running, onToggle }: Props) {
+export function ToggleButton({ isRunning: running, onToggle }: Props) {
   return (
     <button
       className={`${styles.toggleBtn} ${running ? styles.running : ''}`}
