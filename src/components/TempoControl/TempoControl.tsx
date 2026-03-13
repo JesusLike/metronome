@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { clamp } from '../../utils';
 import styles from './TempoControl.module.css';
 
+export const WHEEL_DEBOUNCE_MS = 300;
+
 interface Props {
   tempo: number;
   min: number;
@@ -63,7 +65,7 @@ export function TempoControl({ tempo, min, max, onChange }: Props) {
     setDisplayTempo(newVal);
     setInputValue(String(newVal));
     if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
-    wheelTimerRef.current = setTimeout(() => onChange(newVal), 300);
+    wheelTimerRef.current = setTimeout(() => onChange(newVal), WHEEL_DEBOUNCE_MS);
   }, [min, max, onChange]);
 
   return (
