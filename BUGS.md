@@ -101,3 +101,20 @@ The `toggle` function placed side effects (`start()` / `stop()`) inside a React 
 
 **Fix:**
 Moved `start()` / `stop()` calls out of the state updater and into the `toggle` callback body, using a `runningRef` to track the current state without a stale closure. As a secondary defensive measure, `start()` in `audio.ts` now calls `stop()` first to guarantee only one scheduler loop runs at a time.
+
+---
+
+## BUG-008 — Number input accepts non-digit characters
+
+**Status:** Fixed (`075ccf6` - "bugfix - number input must allow digits only")
+
+**Description:**
+The tempo number input (`type="number"`) allowed typing delimiter and special characters: `.`, `-`, `e`, `E`, `+`. These characters are natively permitted by the browser in number inputs (to support floats, negative numbers, and scientific notation), but are meaningless for a BPM value that must be a positive integer.
+
+**Root cause:**
+`<input type="number">` accepts any character that could form a valid floating-point number. No filtering was applied at the component level.
+
+**Fix:**
+Two complementary layers of prevention added to `TempoControl`:
+1. `onKeyDown` — calls `e.preventDefault()` for `.`, `-`, `e`, `E`, `+`, blocking the character before it is inserted (also prevents the cursor-jump-to-end side effect that the `onChange`-only approach causes).
+2. `onChange` filter — rejects any value that doesn't match `/^\d*$/`, guarding against paste and any other non-keyboard input path.
