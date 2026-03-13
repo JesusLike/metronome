@@ -34,7 +34,7 @@ export function TempoControl({ tempo, min, max, onChange }: Props) {
 
   // Number input handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    if (/^\d*$/.test(e.target.value)) setInputValue(e.target.value);
   };
 
   const handleInputCommit = () => {
@@ -42,6 +42,7 @@ export function TempoControl({ tempo, min, max, onChange }: Props) {
   };
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (['.', '-', 'e', 'E', '+'].includes(e.key)) e.preventDefault();
     if (e.key === 'Enter') handleInputCommit();
   };
 

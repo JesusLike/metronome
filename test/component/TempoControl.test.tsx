@@ -83,6 +83,46 @@ describe('TempoControl', () => {
     expect(slider.value).toBe('160');
   });
 
+  it('ignores decimal point while typing', () => {
+    render(<TempoControl {...defaultProps} />);
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    fireEvent.input(input, { target: { value: '60' } });
+    fireEvent.keyDown(input, { key: '.',  code: 190 }); // rejected — '6.0' is a valid float so jsdom won't sanitize it
+    expect(input.value).toBe('60');
+  });
+
+  it('ignores minus sign while typing', () => {
+    render(<TempoControl {...defaultProps} />);
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    fireEvent.input(input, { target: { value: '60' } });
+    fireEvent.keyDown(input, { key: '-' });
+    expect(input.value).toBe('60');
+  });
+
+  it('ignores e notation while typing', () => {
+    render(<TempoControl {...defaultProps} />);
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    fireEvent.input(input, { target: { value: '60' } });
+    fireEvent.keyDown(input, { key: 'e' });
+    expect(input.value).toBe('60');
+  });
+
+  it('ignores E notation while typing', () => {
+    render(<TempoControl {...defaultProps} />);
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    fireEvent.input(input, { target: { value: '60' } });
+    fireEvent.keyDown(input, { key: 'E' });
+    expect(input.value).toBe('60');
+  });
+
+  it('ignores plus sign while typing', () => {
+    render(<TempoControl {...defaultProps} />);
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    fireEvent.input(input, { target: { value: '60' } });
+    fireEvent.keyDown(input, { key: '+' });
+    expect(input.value).toBe('60');
+  });
+
   it('does not call onChange while typing in number input', () => {
     render(<TempoControl {...defaultProps} />);
     const input = screen.getByRole('spinbutton');
