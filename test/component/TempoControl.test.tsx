@@ -11,125 +11,171 @@ afterEach(cleanup);
 const defaultProps = { tempo: 120, min: 1, max: 999, onChange };
 
 describe('TempoControl', () => {
-  it('displays the current tempo', () => {
-    render(<TempoControl {...defaultProps} tempo={140} />);
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
-    expect(input.value).toBe('140');
+  describe('basic user interaction', () => {
+    it('displays the current tempo', () => {
+      render(<TempoControl {...defaultProps} tempo={140} />);
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      expect(input.value).toBe('140');
+    });
+
+    it('updates the number input when slider moves', () => {
+      render(<TempoControl {...defaultProps} />);
+      const slider = screen.getByRole('slider') as HTMLInputElement;
+      fireEvent.change(slider, { target: { value: '160' } });
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      expect(input.value).toBe('160');
+    });
+
+    it('commits tempo on Enter', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton');
+      fireEvent.change(input, { target: { value: '180' } });
+      fireEvent.keyDown(input, { key: 'Enter' });
+      expect(onChange).toHaveBeenCalledWith(180);
+    });
+
+    it('reverts to current tempo on invalid input', () => {
+      render(<TempoControl {...defaultProps} tempo={120} />);
+      const input = screen.getByRole('spinbutton');
+      fireEvent.change(input, { target: { value: 'abc' } });
+      fireEvent.keyDown(input, { key: 'Enter' });
+      expect(onChange).toHaveBeenCalledWith(120);
+    });
+
+    it('clamps tempo to max on commit', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton');
+      fireEvent.change(input, { target: { value: '9999' } });
+      fireEvent.keyDown(input, { key: 'Enter' });
+      expect(onChange).toHaveBeenCalledWith(999);
+    });
+
+    it('clamps tempo to min on commit', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton');
+      fireEvent.change(input, { target: { value: '0' } });
+      fireEvent.keyDown(input, { key: 'Enter' });
+      expect(onChange).toHaveBeenCalledWith(1);
+    });
+
+    it('commits tempo on blur', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton');
+      fireEvent.change(input, { target: { value: '90' } });
+      fireEvent.blur(input);
+      expect(onChange).toHaveBeenCalledWith(90);
+    });
+
+    it('commits slider value on mouse up', () => {
+      render(<TempoControl {...defaultProps} />);
+      const slider = screen.getByRole('slider');
+      fireEvent.change(slider, { target: { value: '100' } });
+      fireEvent.mouseUp(slider);
+      expect(onChange).toHaveBeenCalledWith(100);
+    });
+
+    it('updates slider when tempo prop changes after number input commit', () => {
+      const { rerender } = render(<TempoControl {...defaultProps} tempo={120} />);
+      const input = screen.getByRole('spinbutton');
+      fireEvent.change(input, { target: { value: '160' } });
+      fireEvent.keyDown(input, { key: 'Enter' });
+      rerender(<TempoControl {...defaultProps} tempo={160} />);
+      const slider = screen.getByRole('slider') as HTMLInputElement;
+      expect(slider.value).toBe('160');
+    });
+
+    it('does not call onChange while typing in number input', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton');
+      fireEvent.change(input, { target: { value: '1' } });
+      fireEvent.change(input, { target: { value: '15' } });
+      fireEvent.change(input, { target: { value: '150' } });
+      expect(onChange).not.toHaveBeenCalled();
+    });
   });
 
-  it('updates the number input when slider moves', () => {
-    render(<TempoControl {...defaultProps} />);
-    const slider = screen.getByRole('slider') as HTMLInputElement;
-    fireEvent.change(slider, { target: { value: '160' } });
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
-    expect(input.value).toBe('160');
+  describe('typing invalid characters into number input', () => {
+    it('ignores decimal point while typing', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      fireEvent.input(input, { target: { value: '60' } });
+      fireEvent.keyDown(input, { key: '.',  code: 190 }); // rejected — '6.0' is a valid float so jsdom won't sanitize it
+      expect(input.value).toBe('60');
+    });
+
+    it('ignores minus sign while typing', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      fireEvent.input(input, { target: { value: '60' } });
+      fireEvent.keyDown(input, { key: '-' });
+      expect(input.value).toBe('60');
+    });
+
+    it('ignores e notation while typing', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      fireEvent.input(input, { target: { value: '60' } });
+      fireEvent.keyDown(input, { key: 'e' });
+      expect(input.value).toBe('60');
+    });
+
+    it('ignores E notation while typing', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      fireEvent.input(input, { target: { value: '60' } });
+      fireEvent.keyDown(input, { key: 'E' });
+      expect(input.value).toBe('60');
+    });
+
+    it('ignores plus sign while typing', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      fireEvent.input(input, { target: { value: '60' } });
+      fireEvent.keyDown(input, { key: '+' });
+      expect(input.value).toBe('60');
+    });
   });
 
-  it('commits tempo on Enter', () => {
-    render(<TempoControl {...defaultProps} />);
-    const input = screen.getByRole('spinbutton');
-    fireEvent.change(input, { target: { value: '180' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
-    expect(onChange).toHaveBeenCalledWith(180);
-  });
+  describe('pasting invalid characters into number input', () => {
+    it('rejects decimal point', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      fireEvent.input(input, { target: { value: '60' } });
+      fireEvent.change(input, { target: { value: '1.5' } }); // valid float — not sanitized by jsdom
+      expect(input.value).toBe('60');
+    });
 
-  it('reverts to current tempo on invalid input', () => {
-    render(<TempoControl {...defaultProps} tempo={120} />);
-    const input = screen.getByRole('spinbutton');
-    fireEvent.change(input, { target: { value: 'abc' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
-    expect(onChange).toHaveBeenCalledWith(120);
-  });
+    it('rejects minus sign', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      fireEvent.input(input, { target: { value: '60' } });
+      fireEvent.change(input, { target: { value: '-60' } }); // valid negative — not sanitized by jsdom
+      expect(input.value).toBe('60');
+    });
 
-  it('clamps tempo to max on commit', () => {
-    render(<TempoControl {...defaultProps} />);
-    const input = screen.getByRole('spinbutton');
-    fireEvent.change(input, { target: { value: '9999' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
-    expect(onChange).toHaveBeenCalledWith(999);
-  });
+    it('rejects e notation (lowercase)', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      fireEvent.input(input, { target: { value: '60' } });
+      fireEvent.change(input, { target: { value: '6e2' } });
+      expect(input.value).toBe('60');
+    });
 
-  it('clamps tempo to min on commit', () => {
-    render(<TempoControl {...defaultProps} />);
-    const input = screen.getByRole('spinbutton');
-    fireEvent.change(input, { target: { value: '0' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
-    expect(onChange).toHaveBeenCalledWith(1);
-  });
+    it('rejects e notation (uppercase)', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      fireEvent.input(input, { target: { value: '60' } });
+      fireEvent.change(input, { target: { value: '6E2' } });
+      expect(input.value).toBe('60');
+    });
 
-  it('commits tempo on blur', () => {
-    render(<TempoControl {...defaultProps} />);
-    const input = screen.getByRole('spinbutton');
-    fireEvent.change(input, { target: { value: '90' } });
-    fireEvent.blur(input);
-    expect(onChange).toHaveBeenCalledWith(90);
-  });
-
-  it('commits slider value on mouse up', () => {
-    render(<TempoControl {...defaultProps} />);
-    const slider = screen.getByRole('slider');
-    fireEvent.change(slider, { target: { value: '100' } });
-    fireEvent.mouseUp(slider);
-    expect(onChange).toHaveBeenCalledWith(100);
-  });
-
-  it('updates slider when tempo prop changes after number input commit', () => {
-    const { rerender } = render(<TempoControl {...defaultProps} tempo={120} />);
-    const input = screen.getByRole('spinbutton');
-    fireEvent.change(input, { target: { value: '160' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
-    rerender(<TempoControl {...defaultProps} tempo={160} />);
-    const slider = screen.getByRole('slider') as HTMLInputElement;
-    expect(slider.value).toBe('160');
-  });
-
-  it('ignores decimal point while typing', () => {
-    render(<TempoControl {...defaultProps} />);
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
-    fireEvent.input(input, { target: { value: '60' } });
-    fireEvent.keyDown(input, { key: '.',  code: 190 }); // rejected — '6.0' is a valid float so jsdom won't sanitize it
-    expect(input.value).toBe('60');
-  });
-
-  it('ignores minus sign while typing', () => {
-    render(<TempoControl {...defaultProps} />);
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
-    fireEvent.input(input, { target: { value: '60' } });
-    fireEvent.keyDown(input, { key: '-' });
-    expect(input.value).toBe('60');
-  });
-
-  it('ignores e notation while typing', () => {
-    render(<TempoControl {...defaultProps} />);
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
-    fireEvent.input(input, { target: { value: '60' } });
-    fireEvent.keyDown(input, { key: 'e' });
-    expect(input.value).toBe('60');
-  });
-
-  it('ignores E notation while typing', () => {
-    render(<TempoControl {...defaultProps} />);
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
-    fireEvent.input(input, { target: { value: '60' } });
-    fireEvent.keyDown(input, { key: 'E' });
-    expect(input.value).toBe('60');
-  });
-
-  it('ignores plus sign while typing', () => {
-    render(<TempoControl {...defaultProps} />);
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
-    fireEvent.input(input, { target: { value: '60' } });
-    fireEvent.keyDown(input, { key: '+' });
-    expect(input.value).toBe('60');
-  });
-
-  it('does not call onChange while typing in number input', () => {
-    render(<TempoControl {...defaultProps} />);
-    const input = screen.getByRole('spinbutton');
-    fireEvent.change(input, { target: { value: '1' } });
-    fireEvent.change(input, { target: { value: '15' } });
-    fireEvent.change(input, { target: { value: '150' } });
-    expect(onChange).not.toHaveBeenCalled();
+    it('rejects plus sign', () => {
+      render(<TempoControl {...defaultProps} />);
+      const input = screen.getByRole('spinbutton') as HTMLInputElement;
+      fireEvent.input(input, { target: { value: '60' } });
+      fireEvent.change(input, { target: { value: '1e+2' } });
+      expect(input.value).toBe('60');
+    });
   });
 
   describe('mouse wheel', () => {

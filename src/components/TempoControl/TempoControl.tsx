@@ -36,7 +36,7 @@ export function TempoControl({ tempo, min, max, onChange }: Props) {
 
   // Number input handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (/^\d*$/.test(e.target.value)) setInputValue(e.target.value);
+    if (/^\d*$/.test(e.target.value)) setInputValue(e.target.value);  // handle paste invalid chars
   };
 
   const handleInputCommit = () => {

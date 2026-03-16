@@ -6,5 +6,8 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'node',
+    coverage: {
+      exclude: ['src/audio.ts']
+    },
   },
 });
