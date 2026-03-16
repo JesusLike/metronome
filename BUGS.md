@@ -118,3 +118,18 @@ The tempo number input (`type="number"`) allowed typing delimiter and special ch
 Two complementary layers of prevention added to `TempoControl`:
 1. `onKeyDown` — calls `e.preventDefault()` for `.`, `-`, `e`, `E`, `+`, blocking the character before it is inserted (also prevents the cursor-jump-to-end side effect that the `onChange`-only approach causes).
 2. `onChange` filter — rejects any value that doesn't match `/^\d*$/`, guarding against paste and any other non-keyboard input path.
+
+---
+
+## BUG-009 — Clearing the number input and blurring leaves it empty instead of reverting
+
+**Status:** Fixed (`0901092` - "bugfix - number input doesn't revert cleaning the default value on commit")
+
+**Description:**
+When the user cleared the number input and clicked away without pressing Enter, the input remained empty instead of reverting to the previous valid tempo value.
+
+**Root cause:**
+`commit()` called `onChange(tempo)` when the input was empty (NaN path), but since `tempo` had not actually changed, the `useEffect([tempo])` in `TempoControl` that syncs `inputValue` from the prop did not re-run. The `inputValue` state was left as `""` with no code to reset it.
+
+**Fix:**
+`commit()` now always calls `setInputValue(String(clamped))` after `onChange`, ensuring the displayed value is reset to the committed value regardless of whether the parent state changed.
