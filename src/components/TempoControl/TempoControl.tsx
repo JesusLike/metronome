@@ -29,7 +29,9 @@ export function TempoControl({ tempo, min, max, onChange }: Props) {
   }, [tempo]);
 
   const commit = useCallback((val: number) => {
-    onChange(clamp(Math.round(isNaN(val) ? tempo : val), min, max));
+    const clamped = clamp(Math.round(isNaN(val) ? tempo : val), min, max);
+    onChange(clamped);
+    setInputValue(String(clamped));
   }, [onChange, tempo, min, max]);
 
   // Number input handlers
