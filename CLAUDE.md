@@ -37,6 +37,14 @@ npm run dev
 - **E2E tests (Playwright)** — user-facing flows in a real browser. Test files live in `test/e2e/`.
 - **Manual system testing** — audio correctness (timing, beat accents), visual appearance, and overall usability. Not automatable.
 
+**Running tests:**
+- `npm test` — runs all test suites in order (unit → component → e2e)
+- `npm run test:unit` / `test:component` / `test:e2e` — run a single suite
+- `npm run test:coverage` — runs unit and component tests with v8 coverage report
+
+**Supported browsers (E2E):**
+Playwright runs E2E tests against Chrome, Firefox, Safari (WebKit), and Edge. All four must pass before merging to master. Browser binaries are managed by Playwright (`npx playwright install`).
+
 ## Design
 
 - **Material Design** — follow Material Design principles for components, spacing, elevation, and interaction patterns.
