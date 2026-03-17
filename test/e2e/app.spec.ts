@@ -44,12 +44,33 @@ test.describe('App', () => {
     await expect(slider(page)).toHaveValue('140');
   });
 
-  test('number input rejects non-digit characters', async ({ page }) => {
+  test('number input rejects typed non-digit characters', async ({ page }) => {
     const input = numberInput(page);
     for (const key of ['.', '-', 'e', 'E', '+']) {
       await input.press(key);
       await expect(input).toHaveValue(String(DEFAULT_TEMPO));
     }
+  });
+
+  test('number input rejects pasted non-digit characters', async ({ page }) => {
+    await page.context().grantPermissions([ "clipboard-read", "clipboard-write" ]);
+
+    const input = numberInput(page);
+    const pasteShortcut = `${process.platform === 'darwin' ? 'Meta' : 'Control'}+V`;
+
+    for (const value of ['1.5', '-60', '6e2', '6E2', '1e+2']) {
+      await page.evaluate((val) => {
+        navigator.clipboard.writeText(val);
+      }, value);
+
+      await input.click();
+      await input.selectText();     
+      await page.keyboard.press(pasteShortcut);
+
+      await expect(input).toHaveValue(String(DEFAULT_TEMPO));
+    }
+
+    await page.context().clearPermissions();
   });
 
   test('number input reverts to previous value when cleared and blurred', async ({ page }) => {

@@ -7,7 +7,14 @@ export default defineConfig({
   test: {
     environment: 'node',
     coverage: {
-      exclude: ['src/audio.ts']
+      provider: 'v8',
+      exclude: ['src/audio.ts'],
+      thresholds: {
+        statements: 90,
+        branches: 85,
+        functions: 90,
+        lines: 90,
+      },
     },
   },
 });

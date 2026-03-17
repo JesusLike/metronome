@@ -11,6 +11,9 @@ export function useMetronome() {
     prevState.current = state;
   }, [state]);
 
+  // Stop the scheduler if the component unmounts while running.
+  useEffect(() => () => audioControls.stop(), []);
+
   const setTempo = useCallback((val: number) => dispatch({ type: 'SET_TEMPO', val }), []);
   const start_ = useCallback(() => dispatch({ type: 'START' }), []);
   const stop_ = useCallback(() => dispatch({ type: 'STOP' }), []);
