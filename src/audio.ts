@@ -44,27 +44,34 @@ function scheduler(): void {
   timerId = setTimeout(scheduler, LOOKAHEAD_MS);
 }
 
-export function start(tempo: number): void {
+function start(): void {
   stop(); // clear any existing scheduler before starting a new one
   if (!audioCtx) audioCtx = new AudioContext();
   if (audioCtx.state === 'suspended') audioCtx.resume();
-  currentTempo = tempo;
   nextNoteTime = audioCtx.currentTime + 0.05;
   currentBeat = 0;
   scheduler();
 }
 
-export function stop(): void {
+function stop(): void {
   if (timerId !== null) {
     clearTimeout(timerId);
     timerId = null;
   }
 }
 
-export function updateTempo(tempo: number): void {
+function updateTempo(tempo: number): void {
   currentTempo = clamp(Math.round(tempo), MIN_BPM, MAX_BPM);
   if (timerId !== null && audioCtx) {
     nextNoteTime = audioCtx.currentTime + 0.05;
     currentBeat = 0;
   }
 }
+
+export interface AudioControls {
+  start: () => void;
+  stop: () => void;
+  updateTempo: (tempo: number) => void;
+}
+
+export const audioControls: AudioControls = { start, stop, updateTempo };

@@ -29,6 +29,22 @@ npm run dev
 
 **State:** `running` (bool), `tempo` (number), `audioCtx` (created lazily on first Start to comply with browser autoplay policy), `nextNoteTime` (tracks when the next click should fire), `currentBeat` (0–3, resets on start and tempo change).
 
+## Testing
+
+**Strategy:**
+- **Unit tests (Vitest)** — pure, non-UI logic (e.g. `clamp`, tempo validation). Test files live in `test/unit/`.
+- **Component tests (Vitest + jsdom)** — React component behaviour (e.g. input commit/revert). Test files live in `test/component/`.
+- **E2E tests (Playwright)** — user-facing flows in a real browser. Test files live in `test/e2e/`.
+- **Manual system testing** — audio correctness (timing, beat accents), visual appearance, and overall usability. Not automatable.
+
+**Running tests:**
+- `npm test` — runs all test suites in order (unit → component → e2e)
+- `npm run test:unit` / `test:component` / `test:e2e` — run a single suite
+- `npm run test:coverage` — runs unit and component tests with v8 coverage report
+
+**Supported browsers (E2E):**
+Playwright runs E2E tests against Chrome, Firefox, Safari (WebKit), and Edge. All four must pass before merging to master. Browser binaries are managed by Playwright (`npx playwright install`).
+
 ## Design
 
 - **Material Design** — follow Material Design principles for components, spacing, elevation, and interaction patterns.

@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { clamp } from '../../utils';
 import styles from './TempoControl.module.css';
 
+export const WHEEL_DEBOUNCE_MS = 300;
+
 interface Props {
   tempo: number;
   min: number;
@@ -27,12 +29,14 @@ export function TempoControl({ tempo, min, max, onChange }: Props) {
   }, [tempo]);
 
   const commit = useCallback((val: number) => {
-    onChange(clamp(Math.round(isNaN(val) ? tempo : val), min, max));
+    const clamped = clamp(Math.round(isNaN(val) ? tempo : val), min, max);
+    onChange(clamped);
+    setInputValue(String(clamped));
   }, [onChange, tempo, min, max]);
 
   // Number input handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    if (/^\d*$/.test(e.target.value)) setInputValue(e.target.value);  // handle paste invalid chars
   };
 
   const handleInputCommit = () => {
@@ -40,6 +44,7 @@ export function TempoControl({ tempo, min, max, onChange }: Props) {
   };
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (['.', '-', 'e', 'E', '+'].includes(e.key)) e.preventDefault();
     if (e.key === 'Enter') handleInputCommit();
   };
 
@@ -63,7 +68,7 @@ export function TempoControl({ tempo, min, max, onChange }: Props) {
     setDisplayTempo(newVal);
     setInputValue(String(newVal));
     if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
-    wheelTimerRef.current = setTimeout(() => onChange(newVal), 300);
+    wheelTimerRef.current = setTimeout(() => onChange(newVal), WHEEL_DEBOUNCE_MS);
   }, [min, max, onChange]);
 
   return (

@@ -1,3 +1,5 @@
 export function clamp(val: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, val));
+  const lo = Math.min(min, max);
+  const hi = Math.max(min, max);
+  return Math.max(lo, Math.min(hi, val));
 }
