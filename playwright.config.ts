@@ -6,10 +6,32 @@ export default defineConfig({
     baseURL: 'http://localhost:5173',
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox',  use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit',   use: { ...devices['Desktop Safari'] } },
-    { name: 'edge',     use: { ...devices['Desktop Edge'] } },
+    { 
+      name: 'chromium',
+      use: { 
+        ...devices['Desktop Chrome'],
+        contextOptions: {
+          permissions: ['clipboard-read', 'clipboard-write'],
+        } 
+      } 
+    },
+    { 
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] } 
+    },
+    { 
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] } 
+    },
+    { 
+      name: 'edge',
+      use: { 
+        ...devices['Desktop Edge'],
+        contextOptions: {
+          permissions: ['clipboard-read', 'clipboard-write'],
+        } 
+      }
+    },
   ],
   webServer: {
     command: 'npm run dev',

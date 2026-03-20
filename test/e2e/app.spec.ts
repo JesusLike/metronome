@@ -53,8 +53,6 @@ test.describe('App', () => {
   });
 
   test('number input rejects pasted non-digit characters', async ({ page }) => {
-    await page.context().grantPermissions([ "clipboard-read", "clipboard-write" ]);
-
     const input = numberInput(page);
     const pasteShortcut = `${process.platform === 'darwin' ? 'Meta' : 'Control'}+V`;
 
@@ -69,8 +67,6 @@ test.describe('App', () => {
 
       await expect(input).toHaveValue(String(DEFAULT_TEMPO));
     }
-
-    await page.context().clearPermissions();
   });
 
   test('number input reverts to previous value when cleared and blurred', async ({ page }) => {
