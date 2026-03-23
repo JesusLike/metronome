@@ -6,6 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 React single-page metronome app built with Vite and TypeScript.
 
+## Branching & CI
+
+- `master` is the deploy-ready branch — it must always contain tested, working code.
+- All development happens in feature branches and is merged to `master` via GitHub Pull Request.
+- Merging to `master` requires a passing CI run. The CI pipeline is implemented as a GitHub Actions workflow and runs the complete test suite with coverage.
+
 ## Development
 
 ```bash
