@@ -50,6 +50,7 @@ jobs:
     permissions:
       id-token: write   # required for OIDC authentication with AWS
       contents: read
+    environment: staging
     steps:
       - uses: actions/download-artifact@v6
         with:
