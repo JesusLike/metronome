@@ -6,11 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 React single-page metronome app built with Vite and TypeScript.
 
-## Branching & CI
+## Branching, CI & CD
 
-- `master` is the deploy-ready branch — it must always contain tested, working code.
+- `master` is the deploy-ready branch — it must always contain the latest tested, working code.
 - All development happens in feature branches and is merged to `master` via GitHub Pull Request.
 - Merging to `master` requires a passing CI run. The CI pipeline is implemented as a GitHub Actions workflow and runs the complete test suite with coverage.
+- Upon each successful merge into `master` the CD pipeline runs: it runs all tests, builds the project, uploads the build artifacts to the staging S3 bucket, then generates and publishes a CloudFront Function to apply BasicAuth.
+
+## Staging Environment
+
+The staging environment is a private AWS S3 bucket served via a CloudFront distribution. Access is restricted with HTTP BasicAuth enforced by a CloudFront Function.
+
+- BasicAuth credentials are stored in AWS Secrets Manager.
+- The CD pipeline fetches the credentials from Secrets Manager at deploy time, generates the CloudFront Function with those credentials embedded, and publishes it so the updated build is immediately available for manual testing.
 
 ## Development
 
