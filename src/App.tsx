@@ -8,10 +8,13 @@ export default function App() {
   const { tempo, isRunning: running, setTempo, start, stop } = useMetronome();
 
   return (
-    <div className={styles.card}>
-      <h1 className={styles.title}>Metronome</h1>
-      <TempoControl tempo={tempo} min={MIN_BPM} max={MAX_BPM} onChange={setTempo} />
-      <ToggleButton isRunning={running} onToggle={running ? stop : start} />
-    </div>
+    <>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Metronome</h1>
+        <TempoControl tempo={tempo} min={MIN_BPM} max={MAX_BPM} onChange={setTempo} />
+        <ToggleButton isRunning={running} onToggle={running ? stop : start} />
+      </div>
+      <span className={styles.version}>{__APP_VERSION__}</span>
+    </>
   );
 }

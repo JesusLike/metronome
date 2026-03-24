@@ -3,6 +3,12 @@ name: CD — Staging
 on:
   push:
     branches: [master]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Build version override (e.g. 1.0.0). Leave empty to auto-generate from timestamp.'
+        required: false
+        default: ''
 
 jobs:
   test:
@@ -37,7 +43,17 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      - name: Set build version
+        id: version
+        run: |
+          if [ -n "${{ inputs.version }}" ]; then
+            echo "value=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=$(date -u +%Y.%m.%d-%H%M)" >> "$GITHUB_OUTPUT"
+          fi
       - run: npm run build
+        env:
+          BUILD_VERSION: ${{ steps.version.outputs.value }}
       - uses: actions/upload-artifact@v6
         with:
           name: dist
