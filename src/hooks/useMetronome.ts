@@ -17,6 +17,8 @@ export function useMetronome() {
   const setTempo = useCallback((val: number) => dispatch({ type: 'SET_TEMPO', val }), []);
   const start_ = useCallback(() => dispatch({ type: 'START' }), []);
   const stop_ = useCallback(() => dispatch({ type: 'STOP' }), []);
+  const mute = useCallback(() => dispatch({ type: 'MUTE' }), []);
+  const unmute = useCallback(() => dispatch({ type: 'UNMUTE' }), []);
 
-  return { tempo: state.tempo, isRunning: state.isRunning, setTempo, start: start_, stop: stop_ };
+  return { tempo: state.tempo, isRunning: state.isRunning, isMuted: state.isMuted, setTempo, start: start_, stop: stop_, mute, unmute };
 }

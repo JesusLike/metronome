@@ -4,7 +4,8 @@ const DEFAULT_TEMPO = 120;
 
 const slider = (page: Page) => page.locator('input[type="range"]');
 const numberInput = (page: Page) => page.locator('input[type="number"]');
-const toggleButton = (page: Page) => page.locator('button');
+const toggleButton = (page: Page) => page.locator('button').filter({ hasText: /^(Start|Stop)$/ });
+const muteButton = (page: Page) => page.locator('button[aria-label="Mute"], button[aria-label="Unmute"]');
 
 // ─── UI tests ────────────────────────────────────────────────────────────────
 
@@ -128,6 +129,41 @@ test.describe('App', () => {
     await expect(numberInput(page)).toHaveValue(String(DEFAULT_TEMPO - 1));
     await expect(slider(page)).toHaveValue(String(DEFAULT_TEMPO - 1));
   });
+
+  test('mute button is visible on load', async ({ page }) => {
+    await expect(muteButton(page)).toHaveAttribute('aria-label', 'Mute');
+  });
+
+  test('mute button toggles aria-label', async ({ page }) => {
+    await muteButton(page).click();
+    await expect(muteButton(page)).toHaveAttribute('aria-label', 'Unmute');
+    await muteButton(page).click();
+    await expect(muteButton(page)).toHaveAttribute('aria-label', 'Mute');
+  });
+
+  test('mute does not affect running state when stopped', async ({ page }) => {
+    await muteButton(page).click();
+    await expect(toggleButton(page)).toHaveText('Start');
+  });
+
+  test('mute does not affect running state when running', async ({ page }) => {
+    await toggleButton(page).click();
+    await muteButton(page).click();
+    await expect(toggleButton(page)).toHaveText('Stop');
+  });
+
+  test('start while muted keeps muted state', async ({ page }) => {
+    await muteButton(page).click();
+    await toggleButton(page).click();
+    await expect(muteButton(page)).toHaveAttribute('aria-label', 'Unmute');
+  });
+
+  test('stop while muted keeps muted state', async ({ page }) => {
+    await toggleButton(page).click();
+    await muteButton(page).click();
+    await toggleButton(page).click();
+    await expect(muteButton(page)).toHaveAttribute('aria-label', 'Unmute');
+  });
 });
 
 // ─── AudioContext tests ───────────────────────────────────────────────────────
@@ -231,5 +267,47 @@ test.describe('AudioContext', () => {
     await page.waitForTimeout(600); // longer than one beat at 120 BPM (500 ms)
     const countAfterWait = (await audioCalls(page)).filter(c => c === 'createOscillator').length;
     expect(countAfterWait).toBe(countAfterStop);
+  });
+
+  test('muting while running stops oscillator creation', async ({ page }) => {
+    await toggleButton(page).click(); // start
+    await page.waitForTimeout(100);
+    await muteButton(page).click(); // mute
+    await page.evaluate(() => { (window as any).__audioMock.calls = []; });
+    await page.waitForTimeout(600);
+    const calls = (await audioCalls(page)).filter(c => c === 'createOscillator');
+    expect(calls).toHaveLength(0);
+  });
+
+  test('unmuting while running resumes oscillator creation', async ({ page }) => {
+    await toggleButton(page).click(); // start
+    await muteButton(page).click();   // mute
+    await page.waitForTimeout(100);
+    await page.evaluate(() => { (window as any).__audioMock.calls = []; });
+    await muteButton(page).click();   // unmute
+    // wait longer than one full beat at 120 BPM (500ms) to guarantee the scheduler
+    // advances past the next note time
+    await page.waitForTimeout(700);
+    const calls = (await audioCalls(page)).filter(c => c === 'createOscillator');
+    expect(calls.length).toBeGreaterThan(0);
+  });
+
+  test('starting while muted creates no oscillators', async ({ page }) => {
+    await muteButton(page).click();   // mute before starting
+    await toggleButton(page).click(); // start
+    await page.waitForTimeout(200);
+    const calls = (await audioCalls(page)).filter(c => c === 'createOscillator');
+    expect(calls).toHaveLength(0);
+  });
+
+  test('unmuting after starting while muted resumes oscillator creation', async ({ page }) => {
+    await muteButton(page).click();   // mute before starting
+    await toggleButton(page).click(); // start
+    await page.waitForTimeout(100);
+    await page.evaluate(() => { (window as any).__audioMock.calls = []; });
+    await muteButton(page).click();   // unmute
+    await page.waitForTimeout(700);
+    const calls = (await audioCalls(page)).filter(c => c === 'createOscillator');
+    expect(calls.length).toBeGreaterThan(0);
   });
 });

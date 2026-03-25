@@ -14,9 +14,10 @@ let nextNoteTime = 0;
 let timerId: ReturnType<typeof setTimeout> | null = null;
 let currentTempo = 120;
 let currentBeat = 0;
+let currentMuted = false;
 
 function scheduleClick(time: number, isAccented: boolean): void {
-  if (!audioCtx) return;
+  if (!audioCtx || currentMuted) return;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
 
@@ -60,6 +61,10 @@ function stop(): void {
   }
 }
 
+function setMuted(muted: boolean): void {
+  currentMuted = muted;
+}
+
 function updateTempo(tempo: number): void {
   currentTempo = clamp(Math.round(tempo), MIN_BPM, MAX_BPM);
   if (timerId !== null && audioCtx) {
@@ -72,6 +77,7 @@ export interface AudioControls {
   start: () => void;
   stop: () => void;
   updateTempo: (tempo: number) => void;
+  setMuted: (muted: boolean) => void;
 }
 
-export const audioControls: AudioControls = { start, stop, updateTempo };
+export const audioControls: AudioControls = { start, stop, updateTempo, setMuted };
