@@ -1,0 +1,26 @@
+.muteBtn {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.54);
+  transition: background 0.2s, color 0.2s;
+}
+
+.muteBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.muted {
+  color: rgba(0, 0, 0, 0.26);
+}

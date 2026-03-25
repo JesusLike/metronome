@@ -2,8 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { metronomeReducer, applyAudioEffects, MetronomeState } from '../../src/hooks/metronomeState';
 import { AudioControls } from '../../src/audio';
 
-const TEST_INITIAL_IDLE_STATE: MetronomeState = { tempo: 120, isRunning: false };
-const TEST_INITIAL_RUNNING_STATE: MetronomeState = { tempo: 120, isRunning: true };
+const TEST_INITIAL_IDLE_STATE: MetronomeState = { tempo: 120, isRunning: false, isMuted: false };
+const TEST_INITIAL_RUNNING_STATE: MetronomeState = { tempo: 120, isRunning: true, isMuted: false };
+const TEST_MUTED_IDLE_STATE: MetronomeState = { tempo: 120, isRunning: false, isMuted: true };
+const TEST_MUTED_RUNNING_STATE: MetronomeState = { tempo: 120, isRunning: true, isMuted: true };
 
 describe('metronomeReducer', () => {
   describe('SET_TEMPO', () => {
@@ -65,6 +67,52 @@ describe('metronomeReducer', () => {
       const state = metronomeReducer(TEST_INITIAL_RUNNING_STATE, { type: 'STOP' });
       expect(state.tempo).toBe(TEST_INITIAL_RUNNING_STATE.tempo);
     });
+
+    it('does not change isMuted', () => {
+      const state = metronomeReducer(TEST_MUTED_RUNNING_STATE, { type: 'STOP' });
+      expect(state.isMuted).toBe(true);
+    });
+  });
+
+  describe('MUTE', () => {
+    it('sets isMuted to true when unmuted', () => {
+      const state = metronomeReducer(TEST_INITIAL_IDLE_STATE, { type: 'MUTE' });
+      expect(state.isMuted).toBe(true);
+    });
+
+    it('is idempotent when already muted', () => {
+      const state = metronomeReducer(TEST_MUTED_IDLE_STATE, { type: 'MUTE' });
+      expect(state).toBe(TEST_MUTED_IDLE_STATE);
+    });
+
+    it('does not change isRunning', () => {
+      const state = metronomeReducer(TEST_INITIAL_RUNNING_STATE, { type: 'MUTE' });
+      expect(state.isRunning).toBe(true);
+    });
+  });
+
+  describe('UNMUTE', () => {
+    it('sets isMuted to false when muted', () => {
+      const state = metronomeReducer(TEST_MUTED_IDLE_STATE, { type: 'UNMUTE' });
+      expect(state.isMuted).toBe(false);
+    });
+
+    it('is idempotent when already unmuted', () => {
+      const state = metronomeReducer(TEST_INITIAL_IDLE_STATE, { type: 'UNMUTE' });
+      expect(state).toBe(TEST_INITIAL_IDLE_STATE);
+    });
+
+    it('does not change isRunning', () => {
+      const state = metronomeReducer(TEST_MUTED_RUNNING_STATE, { type: 'UNMUTE' });
+      expect(state.isRunning).toBe(true);
+    });
+  });
+
+  describe('START', () => {
+    it('does not change isMuted', () => {
+      const state = metronomeReducer(TEST_MUTED_IDLE_STATE, { type: 'START' });
+      expect(state.isMuted).toBe(true);
+    });
   });
 });
 
@@ -72,7 +120,7 @@ describe('applyAudioEffects', () => {
   let audio: AudioControls;
 
   beforeEach(() => {
-    audio = { start: vi.fn(), stop: vi.fn(), updateTempo: vi.fn() };
+    audio = { start: vi.fn(), stop: vi.fn(), updateTempo: vi.fn(), setMuted: vi.fn() };
   });
 
   it('calls updateTempo when tempo changes', () => {
@@ -102,9 +150,30 @@ describe('applyAudioEffects', () => {
   });
 
   it('calls both updateTempo and start when starting with a new tempo', () => {
-    const next: MetronomeState = { tempo: 140, isRunning: true };
+    const next: MetronomeState = { tempo: 140, isRunning: true, isMuted: false };
     applyAudioEffects(TEST_INITIAL_IDLE_STATE, next, audio);
     expect(audio.updateTempo).toHaveBeenCalledWith(140);
     expect(audio.start).toHaveBeenCalled();
+  });
+
+  it('calls setMuted(true) when muting', () => {
+    applyAudioEffects(TEST_INITIAL_IDLE_STATE, TEST_MUTED_IDLE_STATE, audio);
+    expect(audio.setMuted).toHaveBeenCalledWith(true);
+  });
+
+  it('calls setMuted(false) when unmuting', () => {
+    applyAudioEffects(TEST_MUTED_IDLE_STATE, TEST_INITIAL_IDLE_STATE, audio);
+    expect(audio.setMuted).toHaveBeenCalledWith(false);
+  });
+
+  it('does not call setMuted when isMuted is unchanged', () => {
+    applyAudioEffects(TEST_INITIAL_IDLE_STATE, TEST_INITIAL_IDLE_STATE, audio);
+    expect(audio.setMuted).not.toHaveBeenCalled();
+  });
+
+  it('does not call start or stop when only mute changes', () => {
+    applyAudioEffects(TEST_INITIAL_RUNNING_STATE, TEST_MUTED_RUNNING_STATE, audio);
+    expect(audio.start).not.toHaveBeenCalled();
+    expect(audio.stop).not.toHaveBeenCalled();
   });
 });
