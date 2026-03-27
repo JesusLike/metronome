@@ -2,12 +2,14 @@ import { clamp } from './utils';
 
 export const MIN_BPM = 1;
 export const MAX_BPM = 999;
+export const MIN_BEATS_PER_BAR = 2;
+export const MAX_BEATS_PER_BAR = 16;
+export const DEFAULT_BEATS_PER_BAR = 4;
 
 const LOOKAHEAD_MS = 25;
 const SCHEDULE_AHEAD_S = 0.1;
 const FREQ_ACCENTED = 1320;
 const FREQ_NORMAL = 880;
-const BEATS_PER_BAR = 4;
 
 let audioCtx: AudioContext | null = null;
 let nextNoteTime = 0;
@@ -15,6 +17,7 @@ let timerId: ReturnType<typeof setTimeout> | null = null;
 let currentTempo = 120;
 let currentBeat = 0;
 let currentMuted = false;
+let currentBeatsPerBar = DEFAULT_BEATS_PER_BAR;
 
 function scheduleClick(time: number, isAccented: boolean): void {
   if (!audioCtx || currentMuted) return;
@@ -40,7 +43,7 @@ function scheduler(): void {
   while (nextNoteTime < audioCtx.currentTime + SCHEDULE_AHEAD_S) {
     scheduleClick(nextNoteTime, currentBeat === 0);
     nextNoteTime += 60.0 / currentTempo;
-    currentBeat = (currentBeat + 1) % BEATS_PER_BAR;
+    currentBeat = (currentBeat + 1) % currentBeatsPerBar;
   }
   timerId = setTimeout(scheduler, LOOKAHEAD_MS);
 }
@@ -65,6 +68,11 @@ function setMuted(muted: boolean): void {
   currentMuted = muted;
 }
 
+function setBeatsPerBar(beats: number): void {
+  currentBeatsPerBar = clamp(beats, MIN_BEATS_PER_BAR, MAX_BEATS_PER_BAR);
+  currentBeat = 0;
+}
+
 function updateTempo(tempo: number): void {
   currentTempo = clamp(Math.round(tempo), MIN_BPM, MAX_BPM);
   if (timerId !== null && audioCtx) {
@@ -78,6 +86,7 @@ export interface AudioControls {
   stop: () => void;
   updateTempo: (tempo: number) => void;
   setMuted: (muted: boolean) => void;
+  setBeatsPerBar: (beats: number) => void;
 }
 
-export const audioControls: AudioControls = { start, stop, updateTempo, setMuted };
+export const audioControls: AudioControls = { start, stop, updateTempo, setMuted, setBeatsPerBar };

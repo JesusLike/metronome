@@ -19,6 +19,7 @@ export function useMetronome() {
   const stop_ = useCallback(() => dispatch({ type: 'STOP' }), []);
   const mute = useCallback(() => dispatch({ type: 'MUTE' }), []);
   const unmute = useCallback(() => dispatch({ type: 'UNMUTE' }), []);
+  const setBeatsPerBar = useCallback((val: number) => dispatch({ type: 'SET_BEATS_PER_BAR', val }), []);
 
-  return { tempo: state.tempo, isRunning: state.isRunning, isMuted: state.isMuted, setTempo, start: start_, stop: stop_, mute, unmute };
+  return { tempo: state.tempo, isRunning: state.isRunning, isMuted: state.isMuted, beatsPerBar: state.beatsPerBar, setTempo, start: start_, stop: stop_, mute, unmute, setBeatsPerBar };
 }

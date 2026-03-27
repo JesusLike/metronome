@@ -1,0 +1,82 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.selectWrapper {
+  position: relative;
+}
+
+.trigger {
+  box-sizing: content-box;
+  width: 2ch;
+  padding: 2px 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: rgba(0, 0, 0, 0.6);
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.trigger:hover,
+.triggerOpen {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.trigger:focus {
+  outline: none;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 100%;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  list-style: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 180px;
+  z-index: 100;
+  min-width: 36px;
+}
+
+.option {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: rgba(0, 0, 0, 0.6);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s;
+}
+
+.option:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.selected {
+  color: #1976d2;
+}
+
+.label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.54);
+  white-space: nowrap;
+  user-select: none;
+}

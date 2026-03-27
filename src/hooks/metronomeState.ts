@@ -1,16 +1,17 @@
 import { clamp } from '../utils';
-import { MIN_BPM, MAX_BPM, AudioControls } from '../audio';
+import { MIN_BPM, MAX_BPM, MIN_BEATS_PER_BAR, MAX_BEATS_PER_BAR, DEFAULT_BEATS_PER_BAR, AudioControls } from '../audio';
 
-export type MetronomeState = { tempo: number; isRunning: boolean; isMuted: boolean };
+export type MetronomeState = { tempo: number; isRunning: boolean; isMuted: boolean; beatsPerBar: number };
 
 export type MetronomeAction =
   | { type: 'SET_TEMPO'; val: number }
   | { type: 'START' }
   | { type: 'STOP' }
   | { type: 'MUTE' }
-  | { type: 'UNMUTE' };
+  | { type: 'UNMUTE' }
+  | { type: 'SET_BEATS_PER_BAR'; val: number };
 
-export const INITIAL_STATE: MetronomeState = { tempo: 120, isRunning: false, isMuted: false };
+export const INITIAL_STATE: MetronomeState = { tempo: 120, isRunning: false, isMuted: false, beatsPerBar: DEFAULT_BEATS_PER_BAR };
 
 export function applyAudioEffects(prev: MetronomeState, next: MetronomeState, audio: AudioControls): void {
   if (next.tempo !== prev.tempo) {
@@ -26,6 +27,9 @@ export function applyAudioEffects(prev: MetronomeState, next: MetronomeState, au
   if (next.isMuted !== prev.isMuted) {
     audio.setMuted(next.isMuted);
   }
+  if (next.beatsPerBar !== prev.beatsPerBar) {
+    audio.setBeatsPerBar(next.beatsPerBar);
+  }
 }
 
 export function metronomeReducer(state: MetronomeState, action: MetronomeAction): MetronomeState {
@@ -40,5 +44,7 @@ export function metronomeReducer(state: MetronomeState, action: MetronomeAction)
       return state.isMuted ? state : { ...state, isMuted: true };
     case 'UNMUTE':
       return state.isMuted ? { ...state, isMuted: false } : state;
+    case 'SET_BEATS_PER_BAR':
+      return { ...state, beatsPerBar: clamp(action.val, MIN_BEATS_PER_BAR, MAX_BEATS_PER_BAR) };
   }
 }

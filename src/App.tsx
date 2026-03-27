@@ -2,11 +2,12 @@ import { useMetronome } from './hooks/useMetronome';
 import { TempoControl } from './components/TempoControl/TempoControl';
 import { ToggleButton } from './components/ToggleButton/ToggleButton';
 import { MuteButton } from './components/MuteButton/MuteButton';
+import { BeatsPerBarControl } from './components/BeatsPerBarControl/BeatsPerBarControl';
 import { MIN_BPM, MAX_BPM } from './audio';
 import styles from './App.module.css';
 
 export default function App() {
-  const { tempo, isRunning: running, isMuted, setTempo, start, stop, mute, unmute } = useMetronome();
+  const { tempo, isRunning: running, isMuted, beatsPerBar, setTempo, start, stop, mute, unmute, setBeatsPerBar } = useMetronome();
 
   return (
     <>
@@ -17,6 +18,9 @@ export default function App() {
         </div>
         <TempoControl tempo={tempo} min={MIN_BPM} max={MAX_BPM} onChange={setTempo} />
         <ToggleButton isRunning={running} onToggle={running ? stop : start} />
+        <div className={styles.barControls}>
+          <BeatsPerBarControl value={beatsPerBar} onChange={setBeatsPerBar} />
+        </div>
       </div>
       <span className={styles.version}>{__APP_VERSION__}</span>
     </>
