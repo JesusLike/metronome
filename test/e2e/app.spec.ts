@@ -1,11 +1,14 @@
 import { test, expect, type Page } from '@playwright/test';
 
 const DEFAULT_TEMPO = 120;
+const DEFAULT_BEATS_PER_BAR = 4;
 
 const slider = (page: Page) => page.locator('input[type="range"]');
 const numberInput = (page: Page) => page.locator('input[type="number"]');
 const toggleButton = (page: Page) => page.locator('button').filter({ hasText: /^(Start|Stop)$/ });
 const muteButton = (page: Page) => page.locator('button[aria-label="Mute"], button[aria-label="Unmute"]');
+const beatsPerBarTrigger = (page: Page) => page.locator('button').filter({ hasText: /^\d{1,2}$/ });
+const beatsPerBarDropdown = (page: Page) => page.locator('ul');
 
 // ─── UI tests ────────────────────────────────────────────────────────────────
 
@@ -163,6 +166,54 @@ test.describe('App', () => {
     await muteButton(page).click();
     await toggleButton(page).click();
     await expect(muteButton(page)).toHaveAttribute('aria-label', 'Unmute');
+  });
+
+  test('beats/bar trigger shows default value on load', async ({ page }) => {
+    await expect(beatsPerBarTrigger(page)).toHaveText(String(DEFAULT_BEATS_PER_BAR));
+  });
+
+  test('beats/bar dropdown is hidden on load', async ({ page }) => {
+    await expect(beatsPerBarDropdown(page)).not.toBeVisible();
+  });
+
+  test('beats/bar dropdown opens on trigger click', async ({ page }) => {
+    await beatsPerBarTrigger(page).click();
+    await expect(beatsPerBarDropdown(page)).toBeVisible();
+  });
+
+  test('beats/bar dropdown shows options 2 through 16', async ({ page }) => {
+    await beatsPerBarTrigger(page).click();
+    const dropdown = beatsPerBarDropdown(page);
+    for (let n = 2; n <= 16; n++) {
+      await expect(dropdown.locator(`button:text-is("${n}")`).first()).toBeVisible();
+    }
+  });
+
+  test('selecting a beats/bar option updates the trigger', async ({ page }) => {
+    await beatsPerBarTrigger(page).click();
+    await beatsPerBarDropdown(page).locator('button:text-is("6")').click();
+    await expect(beatsPerBarTrigger(page)).toHaveText('6');
+  });
+
+  test('beats/bar dropdown closes after selecting an option', async ({ page }) => {
+    await beatsPerBarTrigger(page).click();
+    await beatsPerBarDropdown(page).locator('button:text-is("6")').click();
+    await expect(beatsPerBarDropdown(page)).not.toBeVisible();
+  });
+
+  test('beats/bar dropdown closes on outside click', async ({ page }) => {
+    await beatsPerBarTrigger(page).click();
+    await expect(beatsPerBarDropdown(page)).toBeVisible();
+    await page.locator('h1').click();
+    await expect(beatsPerBarDropdown(page)).not.toBeVisible();
+  });
+
+  test('beats/bar selection persists across start/stop', async ({ page }) => {
+    await beatsPerBarTrigger(page).click();
+    await beatsPerBarDropdown(page).locator('button:text-is("3")').click();
+    await toggleButton(page).click();
+    await toggleButton(page).click();
+    await expect(beatsPerBarTrigger(page)).toHaveText('3');
   });
 });
 
