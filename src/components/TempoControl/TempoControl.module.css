@@ -19,7 +19,7 @@
   text-align: center;
   background: transparent;
   border: none;
-  color: rgba(0, 0, 0, 0.87);
+  color: var(--color-text-primary);
   outline: none;
   -moz-appearance: textfield;
 }
@@ -32,7 +32,7 @@
 .bpmLabel {
   font-size: 1rem;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--color-text-secondary);
 }
 
 .tempoSlider {
@@ -41,7 +41,7 @@
   appearance: none;
   height: 4px;
   border-radius: 2px;
-  background: rgba(0, 0, 0, 0.12);
+  background: var(--color-divider);
   outline: none;
   cursor: pointer;
 }
@@ -52,7 +52,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #1976d2;
+  background: var(--color-primary);
   cursor: pointer;
 }
 
@@ -60,7 +60,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #1976d2;
+  background: var(--color-primary);
   cursor: pointer;
   border: none;
 }
