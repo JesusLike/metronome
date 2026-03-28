@@ -1,3 +1,19 @@
+:root {
+  --color-primary: #1976d2;
+  --color-primary-hover: #1565c0;
+  --color-danger: #e53935;
+  --color-danger-hover: #c62828;
+  --color-surface: #fff;
+  --color-background: #f5f5f5;
+  --color-text-primary: rgba(0, 0, 0, 0.87);
+  --color-text-secondary: rgba(0, 0, 0, 0.6);
+  --color-text-disabled: rgba(0, 0, 0, 0.38);
+  --color-hover-overlay: rgba(0, 0, 0, 0.06);
+  --color-divider: rgba(0, 0, 0, 0.12);
+  --font-size-base: 1rem;
+  --font-size-tempo: 4rem;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -9,8 +25,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
-  color: rgba(0, 0, 0, 0.87);
+  background: var(--color-background);
+  color: var(--color-text-primary);
   font-family: system-ui, sans-serif;
   padding: 16px;
 }
