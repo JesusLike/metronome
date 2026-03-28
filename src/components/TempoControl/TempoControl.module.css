@@ -14,7 +14,7 @@
 
 .tempoInput {
   width: 3.5ch;
-  font-size: 4rem;
+  font-size: var(--font-size-tempo);
   font-weight: 300;
   text-align: center;
   background: transparent;
@@ -30,7 +30,7 @@
 }
 
 .bpmLabel {
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   font-weight: 500;
   color: var(--color-text-secondary);
 }

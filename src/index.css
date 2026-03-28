@@ -10,6 +10,8 @@
   --color-text-disabled: rgba(0, 0, 0, 0.38);
   --color-hover-overlay: rgba(0, 0, 0, 0.06);
   --color-divider: rgba(0, 0, 0, 0.12);
+  --font-size-base: 1rem;
+  --font-size-tempo: 4rem;
 }
 
 *, *::before, *::after {
