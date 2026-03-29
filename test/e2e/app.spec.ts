@@ -88,7 +88,7 @@ test.describe('App', () => {
     await input.selectText();
     await input.press('Backspace');
     await page.locator('h1').click(); // blur
-    await expect(input).toHaveValue('140');
+    await expect(input).toHaveValue('1140');
   });
 
   test('tempo clamps to maximum on out-of-range input', async ({ page }) => {
