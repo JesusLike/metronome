@@ -3,11 +3,15 @@ import { TempoControl } from './components/TempoControl/TempoControl';
 import { ToggleButton } from './components/ToggleButton/ToggleButton';
 import { MuteButton } from './components/MuteButton/MuteButton';
 import { BeatsPerBarControl } from './components/BeatsPerBarControl/BeatsPerBarControl';
+import { BeatPatternControl } from './components/BeatPatternControl/BeatPatternControl';
 import { MIN_BPM, MAX_BPM } from './audio';
 import styles from './App.module.css';
 
 export default function App() {
-  const { tempo, isRunning: running, isMuted, beatsPerBar, setTempo, start, stop, mute, unmute, setBeatsPerBar } = useMetronome();
+  const {
+    tempo, isRunning: running, isMuted, beatsPerBar, beatPattern, activeBeat,
+    setTempo, start, stop, mute, unmute, setBeatsPerBar, setBeatPattern,
+  } = useMetronome();
 
   return (
     <>
@@ -21,6 +25,7 @@ export default function App() {
         <div className={styles.barControls}>
           <BeatsPerBarControl value={beatsPerBar} onChange={setBeatsPerBar} />
         </div>
+        <BeatPatternControl pattern={beatPattern} activeBeat={activeBeat} onChange={setBeatPattern} />
       </div>
       <span className={styles.version}>{__APP_VERSION__}</span>
     </>
