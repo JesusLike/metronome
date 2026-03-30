@@ -1,0 +1,53 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.beatBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s;
+  padding: 0;
+}
+
+.beatBtn:hover {
+  opacity: 0.8;
+}
+
+.strong {
+  background: #e53935;
+}
+
+.medium {
+  background: #f9a825;
+}
+
+.weak {
+  background: #43a047;
+}
+
+.muted {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  box-shadow: 0 0 0 1.5px var(--color-divider);
+}
+
+.active {
+  transform: scale(1.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
