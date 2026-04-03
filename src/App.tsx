@@ -17,7 +17,7 @@ export default function App() {
     <>
       <div className={styles.card}>
         <div className={styles.titleRow}>
-          <h1 className={styles.title}>Metronome</h1>
+          <h1 className={styles.title}>MetroGnome</h1>
           <MuteButton isMuted={isMuted} onToggle={isMuted ? unmute : mute} />
         </div>
         <TempoControl tempo={tempo} min={MIN_BPM} max={MAX_BPM} onChange={setTempo} />
