@@ -36,6 +36,8 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.value }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -43,6 +45,7 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+
       - name: Set build version
         id: version
         run: |
@@ -51,14 +54,37 @@ jobs:
           else
             echo "value=$(date -u +%Y.%m.%d-%H%M)" >> "$GITHUB_OUTPUT"
           fi
-      - run: npm run build
+
+      - name: Build
+        run: npm run build
         env:
           BUILD_VERSION: ${{ steps.version.outputs.value }}
+
+      - name: Write build metadata
+        run: |
+          cat > dist/build.json << EOF
+          {
+            "version": "${{ steps.version.outputs.value }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "commit": "${{ github.sha }}",
+            "runId": "${{ github.run_id }}"
+          }
+          EOF
+
+      - name: Archive build
+        run: tar -czf dist-${{ steps.version.outputs.value }}.tar.gz dist/
+
       - uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist/
-          retention-days: 7
+          retention-days: 3
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: dist-archive
+          path: dist-${{ steps.version.outputs.value }}.tar.gz
+          retention-days: 3
 
   deploy:
     needs: [test, e2e, build]
@@ -73,13 +99,22 @@ jobs:
           name: dist
           path: dist/
 
+      - uses: actions/download-artifact@v6
+        with:
+          name: dist-archive
+
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Upload build to S3
-        run: aws s3 sync dist/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
+      - name: Store release archive in S3
+        run: |
+          aws s3 cp dist-${{ needs.build.outputs.version }}.tar.gz \
+            s3://${{ secrets.AWS_S3_ARTIFACTS_BUCKET }}/releases/${{ needs.build.outputs.version }}/dist.tar.gz
+
+      - name: Upload build to staging S3
+        run: aws s3 sync dist/ s3://${{ secrets.AWS_S3_STAGING_BUCKET }} --delete
 
       - name: Fetch BasicAuth credentials from Secrets Manager
         id: secret
