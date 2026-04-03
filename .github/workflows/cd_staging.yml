@@ -108,10 +108,10 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Store release archive in S3
+      - name: Store build archive in S3
         run: |
           aws s3 cp dist-${{ needs.build.outputs.version }}.tar.gz \
-            s3://${{ secrets.AWS_S3_ARTIFACTS_BUCKET }}/releases/${{ needs.build.outputs.version }}/dist.tar.gz
+            s3://${{ secrets.AWS_S3_ARTIFACTS_BUCKET }}/builds/${{ needs.build.outputs.version }}/dist.tar.gz
 
       - name: Upload build to staging S3
         run: aws s3 sync dist/ s3://${{ secrets.AWS_S3_STAGING_BUCKET }} --delete
