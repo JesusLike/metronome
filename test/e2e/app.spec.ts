@@ -20,7 +20,7 @@ test.describe('App', () => {
   });
 
   test('shows the metronome card on load', async ({ page }) => {
-    await expect(page.locator('h1')).toHaveText('Metronome');
+    await expect(page.locator('h1')).toHaveText('MetroGnome');
     await expect(numberInput(page)).toHaveValue(String(DEFAULT_TEMPO));
     await expect(slider(page)).toHaveValue(String(DEFAULT_TEMPO));
     await expect(toggleButton(page)).toHaveText('Start');
