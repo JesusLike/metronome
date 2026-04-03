@@ -597,6 +597,8 @@ test.describe('BeatPattern AudioContext', () => {
     await page.waitForTimeout(100);
     // change beat 2 from medium to weak while running
     await beatBtn(page, 2).click(); // medium → weak
+    await beatBtn(page, 3).click();
+    await beatBtn(page, 4).click();
     await page.evaluate(() => { (window as any).__audioMock.oscillators = []; });
     await page.waitForTimeout(700); // wait for at least one full bar
     const oscs = await getOscillators(page);
