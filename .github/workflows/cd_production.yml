@@ -1,0 +1,42 @@
+name: CD — Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (e.g. 2025.01.15-1430). Must exist in artifact storage.'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: production
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Download build archive from S3
+        run: |
+          aws s3 cp \
+            s3://${{ secrets.AWS_S3_ARTIFACTS_BUCKET }}/builds/${{ inputs.version }}/dist.tar.gz \
+            dist.tar.gz
+
+      - name: Extract archive
+        run: tar -xzf dist.tar.gz
+
+      - name: Remove staging metadata
+        run: rm dist/build.json
+
+      - name: Deploy to production S3
+        run: aws s3 sync dist/ s3://${{ secrets.AWS_S3_PRODUCTION_BUCKET }} --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.AWS_CF_PRODUCTION_DISTRIBUTION_ID }}" \
+            --paths "/*"
