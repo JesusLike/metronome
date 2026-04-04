@@ -3,6 +3,10 @@
   --color-primary-hover: #1565c0;
   --color-danger: #e53935;
   --color-danger-hover: #c62828;
+  --color-warning: #f9a825;
+  --color-warning-hover: #da9718;
+  --color-info: #43a047;
+  --color-info-hover: #248f3a;
   --color-surface: #fff;
   --color-background: #f5f5f5;
   --color-text-primary: rgba(0, 0, 0, 0.87);
