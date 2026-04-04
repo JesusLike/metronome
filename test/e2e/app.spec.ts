@@ -11,6 +11,7 @@ const muteButton = (page: Page) => page.locator('button[aria-label="Mute"], butt
 const beatsPerBarTrigger = (page: Page) => page.locator('button').filter({ hasText: /^\d{1,2}$/ });
 const beatsPerBarDropdown = (page: Page) => page.locator('ul');
 const beatBtn = (page: Page, n: number) => page.locator(`button[aria-label^="Beat ${n}:"]`);
+const tapButton = (page: Page) => page.locator('button[aria-label="Tap Tempo"]');
 
 // ─── UI tests ────────────────────────────────────────────────────────────────
 
@@ -362,6 +363,42 @@ test.describe('AudioContext', () => {
     await page.waitForTimeout(700);
     const calls = (await audioCalls(page)).filter(c => c === 'createOscillator');
     expect(calls.length).toBeGreaterThan(0);
+  });
+});
+
+// ─── Tap Tempo tests ─────────────────────────────────────────────────────────
+
+test.describe('TapTempo', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+  });
+
+  test('TAP button is visible on load', async ({ page }) => {
+    await expect(tapButton(page)).toBeVisible();
+    await expect(tapButton(page)).toHaveText('TAP');
+  });
+
+  test('TAP button is disabled while metronome is running', async ({ page }) => {
+    await toggleButton(page).click();
+    await expect(tapButton(page)).toBeDisabled();
+  });
+
+  test('TAP button is enabled when metronome is stopped', async ({ page }) => {
+    await toggleButton(page).click();
+    await toggleButton(page).click();
+    await expect(tapButton(page)).not.toBeDisabled();
+  });
+
+  test('two taps change the tempo', async ({ page }) => {
+    await tapButton(page).click();
+    await page.waitForTimeout(600); // ~100 BPM — well away from the default 120
+    await tapButton(page).click();
+    await expect(numberInput(page)).not.toHaveValue('120');
+  });
+
+  test('first tap alone does not change the tempo', async ({ page }) => {
+    await tapButton(page).click();
+    await expect(numberInput(page)).toHaveValue('120');
   });
 });
 

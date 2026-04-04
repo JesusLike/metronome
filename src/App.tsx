@@ -4,6 +4,7 @@ import { ToggleButton } from './components/ToggleButton/ToggleButton';
 import { MuteButton } from './components/MuteButton/MuteButton';
 import { BeatsPerBarControl } from './components/BeatsPerBarControl/BeatsPerBarControl';
 import { BeatPatternControl } from './components/BeatPatternControl/BeatPatternControl';
+import { TapTempoControl } from './components/TapTempoControl/TapTempoControl';
 import { MIN_BPM, MAX_BPM } from './audio';
 import styles from './App.module.css';
 
@@ -26,6 +27,7 @@ export default function App() {
           <BeatsPerBarControl value={beatsPerBar} onChange={setBeatsPerBar} />
         </div>
         <BeatPatternControl pattern={beatPattern} activeBeat={activeBeat} onChange={setBeatPattern} />
+        <TapTempoControl isRunning={running} onTempoChange={setTempo} />
       </div>
       <span className={styles.version}>{__APP_VERSION__}</span>
     </>

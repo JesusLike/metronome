@@ -23,6 +23,8 @@
   justify-content: center;
   transition: opacity 0.15s;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .beatBtn:hover {
@@ -30,15 +32,15 @@
 }
 
 .strong {
-  background: #e53935;
+  background: var(--color-danger);
 }
 
 .medium {
-  background: #f9a825;
+  background: var(--color-warning);
 }
 
 .weak {
-  background: #43a047;
+  background: var(--color-info);
 }
 
 .muted {
